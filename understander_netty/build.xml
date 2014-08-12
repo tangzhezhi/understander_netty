@@ -1,0 +1,24 @@
+<project name="netty" default="run" basedir=".">
+<!-- set global properties for this build -->
+<property name="build" value="${basedir}/bin"/>
+
+<path id="lib_classpath">
+	<fileset dir="${basedir}/libs/">
+		<include name="*.jar"/>
+	</fileset>  
+</path>
+
+<target name="run">
+    <java classname="org.nerdronix.springnetty.server.Main"
+		   fork="true"
+           failonerror="true"
+           maxmemory="800m">
+         <arg value="-h"/>
+		 <classpath refid="lib_classpath"/>
+         <classpath>
+           <pathelement path="${build}"/>
+         </classpath>
+    </java>
+</target>
+
+</project>

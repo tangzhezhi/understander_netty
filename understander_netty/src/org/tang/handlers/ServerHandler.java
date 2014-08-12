@@ -7,8 +7,13 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.tang.dto.BaseDTO;
+import org.tang.handlers.string.test.TestHandler;
+
+import com.google.gson.Gson;
 
 @Component
 @Qualifier("serverHandler")
@@ -16,7 +21,11 @@ import org.springframework.stereotype.Component;
 public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	private static final Logger LOG = LoggerFactory.getLogger(ServerHandler.class);
 	
-	private int i = 0;
+//	private int i = 0;
+	
+	@Autowired
+	private TestHandler testHandler;
+	
 	
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
@@ -28,7 +37,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             ctx.channel().writeAndFlush(msg);
         }
         else{
-        	ctx.channel().writeAndFlush("server:"+msg);
+        	
+        	Gson gson = new Gson();
+        	
+        	BaseDTO dto = gson.fromJson(msg, BaseDTO.class);
+        	
+        	if(("msg").equals(dto.getEntityType())){
+        		testHandler.channelRead(ctx, msg);
+        	}
         }
 	}
 	

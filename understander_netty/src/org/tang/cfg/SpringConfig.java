@@ -36,7 +36,7 @@ import org.tang.handlers.StringProtocolInitalizer;
  * 
  */
 @Configuration
-@ComponentScan("org.nerdronix")
+@ComponentScan("org.tang.netty")
 @PropertySource("classpath:netty-server.properties")
 public class SpringConfig {
 

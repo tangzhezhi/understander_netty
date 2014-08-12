@@ -38,7 +38,7 @@ public class StringProtocolInitalizer extends ChannelInitializer<SocketChannel> 
 		ChannelPipeline pipeline = ch.pipeline();
 		pipeline.addLast("decoder", stringDecoder);
 		pipeline.addLast("encoder", stringEncoder);
-		pipeline.addLast("heartbeat", idleStateHandler);
+//		pipeline.addLast("heartbeat", idleStateHandler);
 		pipeline.addLast("handler", serverHandler);
 	}
 

@@ -2,12 +2,9 @@ package org.tang.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-
 import java.net.InetSocketAddress;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

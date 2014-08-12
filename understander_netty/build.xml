@@ -9,7 +9,7 @@
 </path>
 
 <target name="run">
-    <java classname="org.nerdronix.springnetty.server.Main"
+    <java classname="org.tang.server.Main"
 		   fork="true"
            failonerror="true"
            maxmemory="800m">

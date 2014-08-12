@@ -44,30 +44,30 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }  
 	
 	
-	@Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
-            throws Exception {
-        /*心跳处理*/
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent) evt;
-            if (event.state() == IdleState.READER_IDLE) {
-                /*读超时*/
-                LOG.info("READER_IDLE 读超时");
-                ctx.disconnect();
-            } else if (event.state() == IdleState.WRITER_IDLE) {
-                /*写超时*/   
-                LOG.info("WRITER_IDLE 写超时");
-                i++;
-                
-                if(i==3){
-                	 ctx.close();
-                }
-            } else if (event.state() == IdleState.ALL_IDLE) {
-                /*总超时*/
-//                LOG.info("ALL_IDLE 总超时");
-            }
-        }
-    }
+//	@Override
+//    public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+//            throws Exception {
+//        /*心跳处理*/
+//        if (evt instanceof IdleStateEvent) {
+//            IdleStateEvent event = (IdleStateEvent) evt;
+//            if (event.state() == IdleState.READER_IDLE) {
+//                /*读超时*/
+//                LOG.info("READER_IDLE 读超时");
+//                ctx.disconnect();
+//            } else if (event.state() == IdleState.WRITER_IDLE) {
+//                /*写超时*/   
+//                LOG.info("WRITER_IDLE 写超时");
+//                i++;
+//                
+//                if(i==3){
+//                	 ctx.close();
+//                }
+//            } else if (event.state() == IdleState.ALL_IDLE) {
+//                /*总超时*/
+////                LOG.info("ALL_IDLE 总超时");
+//            }
+//        }
+//    }
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {

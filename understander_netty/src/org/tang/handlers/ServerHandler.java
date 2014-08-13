@@ -22,7 +22,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	private static final Logger LOG = LoggerFactory.getLogger(ServerHandler.class);
 	
 //	private int i = 0;
-	
 	@Autowired
 	private TestHandler testHandler;
 	

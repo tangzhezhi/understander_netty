@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,7 +120,6 @@ public class SpringConfig {
 	public StringDecoder stringDecoder() {
 		return new StringDecoder();
 	}
-	
 	
 	@Bean(name = "idleStateHandler")
 	public IdleStateHandler idleStateHandler() {

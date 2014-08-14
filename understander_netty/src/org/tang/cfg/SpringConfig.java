@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.tang.handlers.HttpProtocolInitalizer;
 import org.tang.handlers.StringProtocolInitalizer;
 
 
@@ -71,13 +72,18 @@ public class SpringConfig {
 	private StringProtocolInitalizer protocolInitalizer;
 	
 	
+	@Autowired
+	@Qualifier("httpProtocolInitializer")
+	private HttpProtocolInitalizer httpProtocolInitializer;
+	
 	@SuppressWarnings("unchecked")
 	@Bean(name = "serverBootstrap")
 	public ServerBootstrap bootstrap() {
 		ServerBootstrap b = new ServerBootstrap();
 		b.group(bossGroup(), workerGroup())
 				.channel(NioServerSocketChannel.class)
-				.childHandler(protocolInitalizer);
+				.childHandler(protocolInitalizer)
+				.childHandler(httpProtocolInitializer);
 		Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
 		Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
 		for (

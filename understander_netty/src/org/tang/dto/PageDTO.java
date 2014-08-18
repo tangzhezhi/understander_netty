@@ -1,7 +1,8 @@
 package org.tang.dto;
 
-public class BaseDTO {
+import java.util.List;
 
+public class PageDTO<T> {
 	// 一页显示的记录数
 	private int numPerPage = 10;
 	// 记录总数
@@ -11,16 +12,7 @@ public class BaseDTO {
 	// 当前页码
 	private int currentPage;
 	
-	//消息是对应实体
-	private String entityType;
-
-	public String getEntityType() {
-		return entityType;
-	}
-
-	public void setEntityType(String entityType) {
-		this.entityType = entityType;
-	}
+	private List<T> data;
 
 	public int getNumPerPage() {
 		return numPerPage;
@@ -53,4 +45,13 @@ public class BaseDTO {
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
+
+	public List<T> getData() {
+		return data;
+	}
+
+	public void setData(List<T> data) {
+		this.data = data;
+	}
+	
 }

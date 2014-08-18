@@ -16,9 +16,16 @@ import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.tang.dto.BaseDTO;
+import org.tang.handlers.http.test.MsgHandler;
+import org.tang.handlers.string.test.TestHandler;
 import org.tang.utils.ByteBufToBytes;
+
+import com.google.gson.Gson;
 
 @Component
 @Qualifier("httpServerHandler")
@@ -27,8 +34,13 @@ public class HttpServerHandler  extends ChannelInboundHandlerAdapter {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpServerHandler.class);
 	private ByteBufToBytes reader;  
 	
+	@Autowired
+	private MsgHandler msgHandler;
+	
+	
 	 @Override  
-	    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {  
+	    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		 
 	        if (msg instanceof HttpRequest) {  
 	            HttpRequest request = (HttpRequest) msg;  
 	            System.out.println("messageType:" + request.headers().get("messageType"));  
@@ -46,14 +58,38 @@ public class HttpServerHandler  extends ChannelInboundHandlerAdapter {
 	  
 	            if (reader.isEnd()) {  
 	                String resultStr = new String(reader.readFull());  
-	                System.out.println("Client said:" + resultStr);  
-	  
-	                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("I am ok"  
-	                        .getBytes()));  
-	                response.headers().set(CONTENT_TYPE, "text/plain");  
-	                response.headers().set(CONTENT_LENGTH, response.content().readableBytes());  
-	                response.headers().set(CONNECTION, Values.KEEP_ALIVE);  
-	                ctx.writeAndFlush(response);  
+	                
+	                if(resultStr.equals("heartbeat")){
+	                    System.out.println("我是心跳包 : " + msg);
+	                    
+    	                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("heartbeat"  
+    	                        .getBytes()));  
+    	                response.headers().set(CONTENT_TYPE, "text/plain");  
+    	                response.headers().set(CONTENT_LENGTH, response.content().readableBytes());  
+    	                response.headers().set(CONNECTION, Values.KEEP_ALIVE);   
+    	                ctx.writeAndFlush(response);  
+	                    
+	                    
+	                    ctx.channel().writeAndFlush(msg);
+	                }
+	                else{
+	                	
+	                	Gson gson = new Gson();
+	                	
+	                	BaseDTO dto = gson.fromJson(resultStr, BaseDTO.class);
+	                	
+	                	if(("msg").equals(dto.getEntityType())){
+	                		msgHandler.channelRead(ctx, resultStr);
+	                	}
+	                	else {
+	    	                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("不是正确的格式"  
+	    	                        .getBytes()));  
+	    	                response.headers().set(CONTENT_TYPE, "text/plain");  
+	    	                response.headers().set(CONTENT_LENGTH, response.content().readableBytes());  
+	    	                response.headers().set(CONNECTION, Values.KEEP_ALIVE);  
+	    	                ctx.writeAndFlush(response);  
+	                	}
+	                }
 	            }  
 	        }  
 	    }  

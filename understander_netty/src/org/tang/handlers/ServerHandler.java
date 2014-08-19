@@ -3,14 +3,13 @@ package org.tang.handlers;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.tang.dto.BaseDTO;
+import org.tang.handlers.http.badidea.QueryBadIdeaHandler;
 import org.tang.handlers.string.test.TestHandler;
 
 import com.google.gson.Gson;
@@ -21,9 +20,11 @@ import com.google.gson.Gson;
 public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	private static final Logger LOG = LoggerFactory.getLogger(ServerHandler.class);
 	
-//	private int i = 0;
 	@Autowired
 	private TestHandler testHandler;
+	
+	@Autowired
+	private QueryBadIdeaHandler queryBadIdeaHandler;
 	
 	
 	@Override
@@ -43,6 +44,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         	
         	if(("msg").equals(dto.getEntityType())){
         		testHandler.channelRead(ctx, msg);
+        	}
+        	else if(("badidea").equals(dto.getEntityType())){
+        		queryBadIdeaHandler.channelRead(ctx, msg);
         	}
         }
 	}

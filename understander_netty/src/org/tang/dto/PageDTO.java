@@ -2,6 +2,8 @@ package org.tang.dto;
 
 import java.util.List;
 
+import org.tang.utils.Pagination;
+
 public class PageDTO<T> {
 	// 一页显示的记录数
 	private int numPerPage = 10;
@@ -11,6 +13,18 @@ public class PageDTO<T> {
 	private int totalPages;
 	// 当前页码
 	private int currentPage;
+	
+	public PageDTO(){}
+	
+	@SuppressWarnings("unchecked")
+	public PageDTO(Pagination<?> p){
+//		PageDTO pdto = new PageDTO();
+		this.setCurrentPage(p.getCurrentPage());
+		this.setTotalPages(p.getTotalPages());
+		this.setTotalRows(p.getTotalRows());
+		this.setData((List<T>) p.getResultList());
+	}
+	
 	
 	private List<T> data;
 
@@ -50,8 +64,8 @@ public class PageDTO<T> {
 		return data;
 	}
 
-	public void setData(List<T> data) {
-		this.data = data;
+	public void setData(List<T> list) {
+		this.data = (List<T>) list;
 	}
 	
 }

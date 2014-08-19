@@ -25,7 +25,7 @@ public class Pagination<T> extends JdbcDaoSupport{
   //结束行数
   private int lastIndex;
   //结果集存放List
-  private List resultList;
+  private List<T> resultList;
   //JdbcTemplate jTemplate
   
   private JdbcTemplate jTemplate;
@@ -108,7 +108,7 @@ public class Pagination<T> extends JdbcDaoSupport{
     this.numPerPage = numPerPage;
   }
 
-  public List getResultList() {
+  public List<T> getResultList() {
     return resultList;
   }
 

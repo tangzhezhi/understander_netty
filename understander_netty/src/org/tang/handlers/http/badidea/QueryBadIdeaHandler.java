@@ -1,4 +1,4 @@
-package org.tang.handlers.http.test;
+package org.tang.handlers.http.badidea;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
@@ -13,8 +13,6 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders.Values;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +20,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.tang.dto.PageDTO;
-import org.tang.dto.string.test.MsgDTO;
-import org.tang.service.string.test.TestService;
+import org.tang.dto.badidea.BadIdeaDTO;
+import org.tang.service.badidea.BadIdeaService;
 import org.tang.utils.Pagination;
 
 import com.google.gson.Gson;
 
 @Component
-@Qualifier("msgHandler")
+@Qualifier("queryBadIdeaHandler")
 @Sharable
-public class MsgHandler  extends ChannelInboundHandlerAdapter {
-	private static final Logger LOG = LoggerFactory.getLogger(MsgHandler.class);
+public class QueryBadIdeaHandler  extends ChannelInboundHandlerAdapter {
+	private static final Logger LOG = LoggerFactory.getLogger(QueryBadIdeaHandler.class);
 	
 	@Autowired
-	private TestService testService;
+	private BadIdeaService badIdeaService;
 	
 	@Autowired
 	private ThreadPoolTaskExecutor threadPool;
@@ -47,12 +45,10 @@ public class MsgHandler  extends ChannelInboundHandlerAdapter {
 	            public void run() {
 			     	Gson gson = new Gson();
 			    	
-			    	MsgDTO dto = gson.fromJson(String.valueOf(msg), MsgDTO.class);
+			     	BadIdeaDTO dto = gson.fromJson(String.valueOf(msg), BadIdeaDTO.class);
 					try {
 						
-//						list = testService.findMsg(dto.getContent());
-						
-						Pagination<?> p = testService.findMsgPage(dto);
+						Pagination<?> p = badIdeaService.queryBadIdea(dto);
 						
 						PageDTO pdto = new PageDTO(p);
 						
@@ -73,20 +69,17 @@ public class MsgHandler  extends ChannelInboundHandlerAdapter {
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		LOG.info("Channel is active\n");
 		super.channelActive(ctx);
 	}
 	
 	@Override  
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {  
-		LOG.info("HttpServerInboundHandler.channelReadComplete");  
         ctx.flush();  
     }  
 	
 	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		LOG.info("\nChannel is disconnected");
 		super.channelInactive(ctx);
 		
 	}

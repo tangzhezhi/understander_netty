@@ -22,8 +22,8 @@
 	    <property name="password" value="tang" />
 	      -->
 	    <property name="url" value="jdbc:oracle:thin:@localhost:1523:orcl" />
-	    <property name="username" value="exam" />
-	    <property name="password" value="exam" />
+	    <property name="username" value="understander" />
+	    <property name="password" value="understander" />
 	    <property name="filters" value="stat" />
 	    <property name="queryTimeout" value="60000"/>
 	    <property name="maxActive" value="20" />

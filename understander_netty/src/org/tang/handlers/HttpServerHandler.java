@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.tang.dto.BaseDTO;
+import org.tang.handlers.http.novelty.QueryNoveltyHandler;
 import org.tang.handlers.http.test.MsgHandler;
 import org.tang.handlers.string.test.TestHandler;
 import org.tang.utils.ByteBufToBytes;
@@ -36,6 +37,9 @@ public class HttpServerHandler  extends ChannelInboundHandlerAdapter {
 	
 	@Autowired
 	private MsgHandler msgHandler;
+	
+	@Autowired
+	private QueryNoveltyHandler queryNoveltyHandler;
 	
 	
 	 @Override  
@@ -76,11 +80,16 @@ public class HttpServerHandler  extends ChannelInboundHandlerAdapter {
 	                	
 	                	Gson gson = new Gson();
 	                	
+	                	
 	                	BaseDTO dto = gson.fromJson(resultStr, BaseDTO.class);
 	                	
 	                	if(("msg").equals(dto.getEntityType())){
 	                		msgHandler.channelRead(ctx, resultStr);
 	                	}
+	                	else if(("query_novelty").equals(dto.getEntityType())){
+	                		queryNoveltyHandler.channelRead(ctx, resultStr);
+	                	}
+	                	
 	                	else {
 	    	                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("不是正确的格式"  
 	    	                        .getBytes()));  

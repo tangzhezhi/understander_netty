@@ -9,7 +9,7 @@ public class BaseDTO {
 	// 总页数
 	private int totalPages;
 	// 当前页码
-	private int currentPage;
+	private int currentPage = 1;
 	
 	//消息是对应实体
 	private String entityType;

@@ -54,7 +54,9 @@ public class QueryNoveltyHandler  extends ChannelInboundHandlerAdapter {
 						
 						PageDTO pdto = new PageDTO(p);
 						
-				        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(gson.toJson(pdto)  
+						String resultmsg = gson.toJson(pdto).toLowerCase();
+						
+				        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(resultmsg  
 				                .getBytes()));  
 				        response.headers().set(CONTENT_TYPE, "text/plain");  
 				        response.headers().set(CONTENT_LENGTH, response.content().readableBytes());  

@@ -1,5 +1,6 @@
 package org.tang.dao.string.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.tang.dto.badidea.BadIdeaDTO;
 import org.tang.dto.string.test.MsgDTO;
 import org.tang.utils.Pagination;
 
@@ -43,13 +45,15 @@ public class TestDaoImpl implements TestDao {
 	@Override
 	public Pagination findMsgPage(MsgDTO msg) throws Exception {
 		String condition = "";
+		List<String> params = new ArrayList<String>();
 		if(msg!=null){
 			if(StringUtils.isNotBlank(msg.getContent())){
-				condition += " and content  like '%"+msg.getContent()+"%' ";
+				condition += " and content  like ? ";
+				params.add(msg.getContent());
 			}
 		}
 		String sql = "select * from t_chat_msg t where 1=1  " + condition;
-		return new Pagination(sql,msg.getCurrentPage(), msg.getNumPerPage(), jdbcTemplate);
+		return new Pagination(sql,params.toArray(),msg.getCurrentPage(), msg.getNumPerPage(), jdbcTemplate);
 		
 	}
 

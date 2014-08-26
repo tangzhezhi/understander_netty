@@ -1,6 +1,11 @@
 package org.tang.utils;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -25,7 +30,7 @@ public class Pagination<T> extends JdbcDaoSupport{
   //结束行数
   private int lastIndex;
   //结果集存放List
-  private List<T> resultList;
+  private List<Map<String,Object>> resultList;
   //JdbcTemplate jTemplate
   
   private JdbcTemplate jTemplate;
@@ -34,13 +39,13 @@ public class Pagination<T> extends JdbcDaoSupport{
    * 每页显示10条记录的构造函数,使用该函数必须先给Pagination设置currentPage，jTemplate初值
    * @param sql oracle语句
    */
-  public Pagination(String sql){
+  public Pagination(String sql,Object[] params ){
     if(jTemplate == null){
       throw new IllegalArgumentException("分页异常 ，jTemplate没有初始化");
     }else if(sql.equals("")){
       throw new IllegalArgumentException("分页异常 ，SQL没有初始化 ");
     }
-    new Pagination(sql,currentPage,NUMBERS_PER_PAGE,jTemplate);
+    new Pagination(sql,params,currentPage,NUMBERS_PER_PAGE,jTemplate);
   }
   
   /**分页构造函数
@@ -49,7 +54,7 @@ public class Pagination<T> extends JdbcDaoSupport{
    * @param numPerPage 每页记录数
    * @param jTemplate JdbcTemplate实例
    */
-  public Pagination(String sql,int currentPage,int numPerPage,JdbcTemplate jTemplate){
+  public Pagination(String sql,Object[] params ,int currentPage,int numPerPage,JdbcTemplate jTemplate){
     if(jTemplate == null){
       throw new IllegalArgumentException("分页异常 ，jTemplate没有初始化. ");
     }else if(sql == null || sql.equals("")){
@@ -66,7 +71,8 @@ public class Pagination<T> extends JdbcDaoSupport{
     //给JdbcTemplate赋值
     setJdbcTemplate(jTemplate);
     //总记录数
-    setTotalRows(getJdbcTemplate().queryForInt(totalSQL.toString()));
+    
+    setTotalRows(getJdbcTemplate().queryForInt(totalSQL.toString(),params));
     //计算总页数
     setTotalPages();
     //计算起始行数
@@ -76,12 +82,12 @@ public class Pagination<T> extends JdbcDaoSupport{
     System.out.println("lastIndex="+lastIndex);//////////////////
     //构造oracle数据库的分页语句
     StringBuffer paginationSQL = new StringBuffer(" SELECT * FROM ( ");
-    paginationSQL.append(" SELECT temp.* ,ROWNUM num FROM ( ");
+    paginationSQL.append(" SELECT temp.*  FROM ( ");
     paginationSQL.append(sql);
     paginationSQL.append(" ) temp where ROWNUM <= " + lastIndex);
-    paginationSQL.append(" ) WHERE num > " + startIndex);
+    paginationSQL.append(" ) WHERE ROWNUM > " + startIndex);
     //装入结果集
-    setResultList(getJdbcTemplate().queryForList(paginationSQL.toString()));
+    setResultList(getJdbcTemplate().queryForList(paginationSQL.toString(),params));
   }
   /**
    * @param args
@@ -108,12 +114,12 @@ public class Pagination<T> extends JdbcDaoSupport{
     this.numPerPage = numPerPage;
   }
 
-  public List<T> getResultList() {
+  public List<Map<String,Object>> getResultList() {
     return resultList;
   }
 
-  public void setResultList(List resultList) {
-    this.resultList = resultList;
+  public void setResultList(List<Map<String,Object>> resultList) {
+	  this.resultList = resultList;
   }
 
   public int getTotalPages() {
